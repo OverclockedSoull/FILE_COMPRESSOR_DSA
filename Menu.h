@@ -3,7 +3,7 @@
 
 class Menu{
     public:
-    //hello
-    //deymmm
-
+    void MainMenu();
+    void DisplayFileSummary();
+    
 };
