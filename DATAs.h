@@ -9,19 +9,8 @@ struct Hnode {
     unsigned char data;
     unsigned int frequency;
 
-    Hnode(unsigned char c, unsigned int f) {
-        left = nullptr;
-        right = nullptr;
-        data = c;
-        frequency = f;
-    }
-    
-    Hnode() {
-        left = nullptr;
-        right = nullptr;
-        data = '\0';
-        frequency = 0;
-    }
+    Hnode(){}
+    Hnode(unsigned int d, unsigned int f){}
 };
 
 class PriorityQ {
