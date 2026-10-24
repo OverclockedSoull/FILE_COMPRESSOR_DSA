@@ -1,4 +1,4 @@
-#include "DATA.h"
+#include "DATAs.h"
 #include <iostream>
 #include <fstream>
 #include <cctype>
@@ -172,6 +172,68 @@ void HBuild::buildTree() {
     }
 
     root = Prio.extractMin();
+}
+
+void HBuild::Decompress(const string& inputFile, const std::string& outputFile) {
+    std::ifstream in(inputFile, ios::binary);
+    if (!in.is_open()) {
+        cout<< "Error: Could not open input file for decompression.\n";
+        return;
+    }
+
+    // Read header (original size and frequency table)
+    in.read(reinterpret_cast<char*>(&originalSize), sizeof(originalSize));
+    for (int i = 0; i < 256; i++) {
+        in.read(reinterpret_cast<char*>(&freq[i]), sizeof(freq[i]));
+    }
+
+    // Rebuild Huffman tree
+    buildTree();
+    if (root == nullptr) {
+        cout << "Error: Huffman tree is empty.\n";
+        in.close();
+        return;
+    }
+
+    std::ofstream out(outputFile, ios::binary);
+    if (!out.is_open()) {
+        cout<< "Error: Could not open output file for writing.\n";
+        deleteTree(root);
+        in.close();
+        return;
+    }
+
+    // Decode bits and traverse tree
+    BitReader reader(in);
+    Hnode* currentNode = root;
+    uint64_t bytesWritten = 0;
+
+    while (bytesWritten < originalSize) {
+        int bit = reader.readBit();
+        if (bit == -1) break;
+
+        if (bit == 0) {
+            currentNode = currentNode->left;
+        } else {
+            currentNode = currentNode->right;
+        }
+
+        if (currentNode == nullptr) {
+            cout<<"Error: Invalid bit sequence encountered during traversal.\n";
+            break;
+        }
+
+        if (currentNode->left == nullptr && currentNode->right == nullptr) {
+            out.put(static_cast<char>(currentNode->data));
+            bytesWritten++;
+            currentNode = root;
+        }
+    }
+
+    out.close();
+    in.close();
+    deleteTree(root);
+    root = nullptr;
 }
 
 bool HBuild::isTxt(const string& filename){
