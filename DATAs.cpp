@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <cctype>
+#include<iomanip>
 using namespace std;
 
 
@@ -47,6 +48,33 @@ void HBuild::Compress(const std::string& inputFile, const std::string& outputFil
 
     std::ofstream out(outputFile, std::ios::binary);
 
+        if (originalSize < 500) {
+        std::cout << "File is too small to compress. Storing as raw data.\n";
+        
+     
+        unsigned char flag = 0; 
+        out.put(flag);
+        
+        
+        int c;
+        while ((c = in.get()) != EOF) {
+            out.put(static_cast<char>(c));
+        }
+        
+        in.close();
+        out.close();
+        displayStats(originalSize, originalSize + 1);
+        return; 
+    }
+   
+
+    
+    unsigned char flag = 1;
+    out.put(flag); 
+
+    countFrequencies(inputFile);
+    buildTree();
+    generateCodes(root, "");
    
     writeHeader(out);
 
@@ -181,7 +209,23 @@ void HBuild::Decompress(const string& inputFile, const std::string& outputFile) 
         return;
     }
 
-    // Read header (original size and frequency table)
+    unsigned char flag;
+    in.get(reinterpret_cast<char&>(flag)); // Read the 1st byte
+
+    if (flag == 0) {
+       
+        std::ofstream out(outputFile, std::ios::binary);
+        int c;
+        while ((c = in.get()) != EOF) {
+            out.put(static_cast<char>(c));
+        }
+        in.close();
+        out.close();
+        cout << "Decompression complete (raw copy).\n";
+        return; 
+    }
+
+    
     in.read(reinterpret_cast<char*>(&originalSize), sizeof(originalSize));
     for (int i = 0; i < 256; i++) {
         in.read(reinterpret_cast<char*>(&freq[i]), sizeof(freq[i]));
@@ -236,6 +280,16 @@ void HBuild::Decompress(const string& inputFile, const std::string& outputFile) 
     root = nullptr;
 }
 
+void Hbuild::displayStats(uint64_t originalSize, uint64_t compressedSize){
+    cout<<"---FILE SUMMARY---\n";
+    cout<<"Original size: "<< originalSize << "bytes\n";
+    cout<<"Compressed size: "<< compressedSize << "bytes\n";
+
+    long long reduced = (long long)originalSize - (long long)compressedSize;
+
+    cout<<"Saved spaced: "<<reduced <<"bytes\n";
+    cout<<"---END OF LINE---\n";
+}
 bool HBuild::isTxt(const string& filename){
    
     // filename length - 4 
