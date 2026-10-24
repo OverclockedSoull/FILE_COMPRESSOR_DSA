@@ -46,11 +46,11 @@ void Menu::handleCompress() {
     outputFile = inputFile;
     size_t dotPos = outputFile.find_last_of('.');
 
-    // para lang manahanp ung . position kasi cinopy natin yung file na gustong icompress sa output, then rename ung .tct to huff para pag ddecompress, ung i dedecompress lang is ung may .huff
+    // para lang manahanp ung . position kasi cinopy natin yung file na gustong icompress sa output, then rename ung .tct to oops para pag ddecompress, ung i dedecompress lang is ung may .oops
     if (dotPos != string::npos) {
         outputFile = outputFile.substr(0, dotPos);
     }
-    outputFile += ".huff";
+    outputFile += ".oops";
 
     cout << "Compressing " << inputFile << " to " << outputFile << "...\n";
     engine.Compress(inputFile, outputFile);
