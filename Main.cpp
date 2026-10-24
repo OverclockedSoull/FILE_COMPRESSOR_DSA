@@ -1,8 +1,10 @@
-#include<iostream>
+#include <iostream>
 #include "DATAs.h"
-#include"Manu.h"
+#include "Menu.h"
 using namespace std;
 
-int main(){
+int main() {
+    Menu app;
+    app.run();
     return 0;
 }
