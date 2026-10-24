@@ -22,6 +22,7 @@ void Menu::MainMenu() {
         cout << "Enter choice: ";
         
         cin >> action;
+        cin.ignore();
 
         if (cin.fail()) {
             cin.clear();
@@ -44,7 +45,7 @@ void Menu::handleCompress() {
     string inputFile, outputFile;
 
     cout << "Enter the name of the .txt file to compress (e.g., test.txt): ";
-    cin >> inputFile;
+    getline(cin, inputFile); 
 
     outputFile = inputFile;
     size_t dotPos = outputFile.find_last_of('.');
@@ -61,7 +62,7 @@ void Menu::handleDecompress() {
     string inputFile, outputFile;
 
     cout << "Enter the name of the .oops file to decompress (e.g., test.oops): ";
-    cin >> inputFile;
+    getline(cin, inputFile);
 
     outputFile = inputFile;
     size_t dotPos = outputFile.find_last_of('.');
