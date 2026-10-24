@@ -10,8 +10,8 @@ struct Hnode {
     unsigned char data;
     unsigned int frequency;
 
-    Hnode(){}
-    Hnode(unsigned int d, unsigned int f){}
+    Hnode();
+    Hnode(unsigned char d, unsigned int f);
 };
 
 class PriorityQ {
@@ -64,14 +64,11 @@ private:
     unsigned int freq[256];
     string codeTable[256];
     uint64_t originalSize;
-    int paddingBits;
 
     void buildTree();
     void generateCodes(Hnode* node, string currentCode);
     void deleteTree(Hnode* node);
-    
-    void countFrequencies(const sstring& filename);
-
+    void countFrequencies(const string& filename);
     void writeHeader(ofstream& out);
     void readHeader(ifstream& in);
 
