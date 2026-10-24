@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cstdint>
 using namespace std;
 
 struct Hnode {
